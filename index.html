@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday My Love! 💕</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fff0f5 0%, #ffd1dc 50%, #ffb6c1 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .font-cursive {
+      font-family: 'Dancing Script', cursive;
+    }
+
+    /* Floating Hearts Background Animation */
+    .heart-bg {
+      position: fixed;
+      top: -10vh;
+      color: rgba(255, 182, 193, 0.6);
+      animation: fall linear infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* 3D Flip Card Effect */
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+
+    /* Interactive Envelope Alignment & Z-Index Fixes */
+    .envelope-wrapper {
+      transition: transform 0.3s ease;
+    }
+    
+    .envelope-wrapper:hover {
+      transform: scale(1.02);
+    }
+
+    .lid {
+      border-right: 140px solid transparent;
+      border-top: 100px solid #f472b6;
+      border-left: 140px solid transparent;
+      transform-origin: top;
+      transition: transform 0.5s ease 0.1s, z-index 0.2s 0.2s;
+      z-index: 25;
+    }
+
+    .envelope-open .lid {
+      transform: rotateX(180deg);
+      z-index: 5;
+    }
+
+    .letter {
+      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 10;
+    }
+
+    .envelope-open .letter {
+      transform: translateY(-110px);
+      z-index: 30;
+    }
+  </style>
+</head>
+<body class="relative text-gray-800 pb-20">
+
+  <!-- Background Animated Hearts Container -->
+  <div id="hearts-container"></div>
+
+  <main class="relative z-10 max-w-4xl mx-auto px-4 py-8 flex flex-col items-center">
+    
+    <!-- Hero Header -->
+    <header class="text-center my-6">
+      <span class="bg-pink-100 text-pink-600 font-semibold text-xs px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm">
+        <i class="fas fa-sparkles mr-1"></i> Today is all about you!
+      </span>
+      <h1 class="text-5xl md:text-7xl font-bold text-pink-600 font-cursive mt-4 drop-shadow-md">
+        Happy Birthday, My Babyyyy! 💖
+      </h1>
+      <p class="text-pink-700 mt-2 text-sm md:text-base">
+        Swipe down for sweet features para lang talaga sau ✨
+      </p>
+    </header>
+
+    <!-- SECTION 1: Fixed Interactive Birthday Card / Letter -->
+    <section class="w-full my-12 flex flex-col items-center">
+      <p class="text-xs text-pink-500 mb-3 font-medium">Buksi kun di mo gsto ma maoy ko 👇</p>
+      
+      <div id="envelope" onclick="openEnvelope()" class="envelope-wrapper relative w-72 h-48 bg-pink-300 rounded-b-lg shadow-2xl cursor-pointer flex justify-center mt-16">
+        
+        <!-- Top Lid -->
+        <div class="lid absolute top-0"></div>
+        
+        <!-- Inside Letter -->
+        <div class="letter absolute top-3 w-64 h-40 bg-white rounded-lg p-4 shadow-md border-2 border-pink-200 flex flex-col justify-between">
+          <p id="typewriter" class="text-xs md:text-sm text-pink-800 font-cursive leading-relaxed">
+            Tap to open...
+          </p>
+          <div class="text-right">
+            <span class="text-xs font-semibold text-pink-500">Forever Yours 💕</span>
+          </div>
+        </div>
+
+        <!-- Envelope Front Flaps -->
+        <div class="absolute bottom-0 left-0 w-0 h-0 border-l-[144px] border-l-pink-400 border-t-[96px] border-t-transparent z-20 rounded-bl-lg"></div>
+        <div class="absolute bottom-0 right-0 w-0 h-0 border-r-[144px] border-r-pink-400 border-t-[96px] border-t-transparent z-20 rounded-br-lg"></div>
+        <div class="absolute bottom-0 w-0 h-0 border-b-[100px] border-b-pink-500 border-x-[144px] border-x-transparent z-20 rounded-b-lg"></div>
+        
+        <!-- Heart Stamp -->
+        <div id="heart-stamp" class="absolute top-12 z-30 text-pink-600 text-2xl drop-shadow pointer-events-none">
+          <i class="fas fa-heart animate-pulse"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Romantic Photo Gallery (Polaroid Flip Cards) -->
+    <section class="w-full my-12">
+      <h2 class="text-3xl font-bold text-center text-pink-600 font-cursive mb-2">Our Sweet Memories 📸</h2>
+      <p class="text-center text-xs text-pink-500 mb-8">Tap on any photo to reveal a secret note!</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        
+        <!-- Photo Card 1 -->
+        <div class="perspective-1000 h-80 w-full cursor-pointer" onclick="flipCard(this)">
+          <div class="card-inner relative w-full h-full duration-700 transform-style-3d shadow-xl rounded-2xl">
+            <div class="absolute inset-0 bg-white p-3 rounded-2xl flex flex-col items-center backface-hidden border-2 border-pink-100">
+              <img src="pic1.jpg" alt="Memory 1" class="w-full h-56 object-cover rounded-xl">
+              <p class="font-cursive text-xl text-pink-600 mt-3">Your Smile ✨</p>
+            </div>
+            <div class="absolute inset-0 bg-pink-500 text-white p-6 rounded-2xl flex flex-col justify-center items-center text-center rotate-y-180 backface-hidden">
+              <i class="fas fa-heart text-3xl text-pink-200 mb-3"></i>
+              <p class="text-sm leading-relaxed">"Your smile brightens even my darkest days. Never stop smiling, my beautiful Babyyyy nga sarwayon!"</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photo Card 2 -->
+        <div class="perspective-1000 h-80 w-full cursor-pointer" onclick="flipCard(this)">
+          <div class="card-inner relative w-full h-full duration-700 transform-style-3d shadow-xl rounded-2xl">
+            <div class="absolute inset-0 bg-white p-3 rounded-2xl flex flex-col items-center backface-hidden border-2 border-pink-100">
+              <img src="pic2.jpg" alt="Memory 2" class="w-full h-56 object-cover rounded-xl">
+              <p class="font-cursive text-xl text-pink-600 mt-3">Our Moments 🌹</p>
+            </div>
+            <div class="absolute inset-0 bg-pink-500 text-white p-6 rounded-2xl flex flex-col justify-center items-center text-center rotate-y-180 backface-hidden">
+              <i class="fas fa-heart text-3xl text-pink-200 mb-3"></i>
+              <p class="text-sm leading-relaxed">"Every single second spent with you feels like a dream I never want to wake up from."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photo Card 3 -->
+        <div class="perspective-1000 h-80 w-full cursor-pointer" onclick="flipCard(this)">
+          <div class="card-inner relative w-full h-full duration-700 transform-style-3d shadow-xl rounded-2xl">
+            <div class="absolute inset-0 bg-white p-3 rounded-2xl flex flex-col items-center backface-hidden border-2 border-pink-100">
+              <img src="pic3.jpg" alt="Memory 3" class="w-full h-56 object-cover rounded-xl">
+              <p class="font-cursive text-xl text-pink-600 mt-3">Forever & Always 💍</p>
+            </div>
+            <div class="absolute inset-0 bg-pink-500 text-white p-6 rounded-2xl flex flex-col justify-center items-center text-center rotate-y-180 backface-hidden">
+              <i class="fas fa-heart text-3xl text-pink-200 mb-3"></i>
+              <p class="text-sm leading-relaxed">"I promise to love you, cherish you, and support you today and for all the birthdays to come!"</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: Virtual Surprises -->
+    <section class="w-full bg-white/70 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-xl my-8 border border-pink-200 text-center">
+      <h2 class="text-3xl font-bold text-pink-600 font-cursive mb-4">Send Virtual Love 💌</h2>
+      
+      <div class="flex flex-wrap justify-center gap-4 my-4">
+        <button onclick="sendKiss()" class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-3 rounded-full shadow-lg font-medium transition transform hover:scale-105 active:scale-95 flex items-center gap-2">
+          <i class="fas fa-kiss-wink-heart text-xl"></i> Send 1,000 Kisses
+        </button>
+
+        <button onclick="sendHug()" class="bg-rose-400 hover:bg-rose-500 text-white px-5 py-3 rounded-full shadow-lg font-medium transition transform hover:scale-105 active:scale-95 flex items-center gap-2">
+          <i class="fas fa-hands-holding-heart text-xl"></i> Warm Tight Hug
+        </button>
+
+        <button onclick="playMusic()" class="bg-fuchsia-500 hover:bg-fuchsia-600 text-white px-5 py-3 rounded-full shadow-lg font-medium transition transform hover:scale-105 active:scale-95 flex items-center gap-2">
+          <i class="fas fa-music text-xl"></i> Play Romantic Melody
+        </button>
+      </div>
+
+      <div id="surprise-output" class="h-12 flex items-center justify-center font-semibold text-pink-600 text-lg"></div>
+    </section>
+
+    <!-- SECTION 4: Final Present Button -->
+    <section class="text-center my-8">
+      <button onclick="openGiftModal()" class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-lg font-bold px-8 py-4 rounded-full shadow-2xl transition transform hover:scale-105 active:scale-95 animate-bounce flex items-center gap-3 mx-auto">
+        <i class="fas fa-gift text-2xl"></i> Claim Your Secret Birthday Gift!
+      </button>
+    </section>
+
+  </main>
+
+  <!-- Modal for Secret Gift -->
+  <div id="gift-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-11/12 text-center shadow-2xl border-4 border-pink-300 relative transform scale-95 transition-transform duration-300" id="modal-content">
+      <button onclick="closeGiftModal()" class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 text-xl font-bold">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <div class="text-5xl text-pink-500 my-2">
+        <i class="fas fa-crown"></i>
+      </div>
+      
+      <h3 class="text-2xl font-bold text-pink-600 font-cursive mb-2">Birthday Pass Ticket 🎟️</h3>
+      <p class="text-sm text-gray-600 mb-6">This ticket grants you one Unlimited Wish granted by me!</p>
+
+      <div class="bg-pink-50 border-2 border-dashed border-pink-300 rounded-2xl p-4 mb-6">
+        <p class="text-xs uppercase tracking-widest text-pink-400 font-semibold">Coupon Code</p>
+        <p class="text-2xl font-black text-pink-600 tracking-wider my-1">MY-FOREVER-BABY</p>
+        <p class="text-xs text-pink-500">Valid forever • Non-refundable • Unlimited Love</p>
+      </div>
+
+      <button onclick="claimVoucher()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 rounded-xl shadow-lg transition">
+        Redeem With A Kiss 😘
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Floating Hearts
+    function createHearts() {
+      const container = document.getElementById('hearts-container');
+      const heartSymbols = ['💖', '💗', '🌸', '💕', '✨', '🌺'];
+      
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('heart-bg');
+        heart.innerText = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        heart.style.animationDelay = Math.random() * 5 + 's';
+        heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+        container.appendChild(heart);
+      }
+    }
+    createHearts();
+
+    // Envelope & Typewriter Animation
+    let envelopeOpened = false;
+    const loveLetterText = "Happy Birthday to the most amazing person in my world! Thank you for bringing so much sweet color, happiness, and love into my life. May all your wishes come true today! 💖";
+
+    function openEnvelope() {
+      const envelope = document.getElementById('envelope');
+      const heartStamp = document.getElementById('heart-stamp');
+      
+      if (!envelopeOpened) {
+        envelope.classList.add('envelope-open');
+        heartStamp.style.display = 'none';
+        envelopeOpened = true;
+
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#ff69b4', '#ff1493', '#ffb6c1']
+        });
+
+        typeWriter();
+      }
+    }
+
+    let i = 0;
+    function typeWriter() {
+      if (i < loveLetterText.length) {
+        document.getElementById("typewriter").innerHTML = loveLetterText.substring(0, i + 1);
+        i++;
+        setTimeout(typeWriter, 35);
+      }
+    }
+
+    // Photo Card Flip
+    function flipCard(card) {
+      const innerCard = card.querySelector('.card-inner');
+      innerCard.classList.toggle('rotate-y-180');
+    }
+
+    // Interactive Actions
+    function sendKiss() {
+      document.getElementById('surprise-output').innerHTML = "💋 Mwah! Sent 1,000 kisses straight to your lips! 💕";
+      confetti({
+        particleCount: 50,
+        scalar: 1.2,
+        shapes: ['circle'],
+        colors: ['#e91e63', '#ff4081', '#f48fb1']
+      });
+    }
+
+    function sendHug() {
+      document.getElementById('surprise-output').innerHTML = "🤗 Sending you the warmest, tightest hug right now!";
+    }
+
+    function playMusic() {
+      document.getElementById('surprise-output').innerHTML = "🎶 Playing a sweet birthday melody for you...";
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+        const notes = [261.63, 329.63, 392.00, 523.25, 440.00, 523.25];
+        notes.forEach((freq, index) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.1, ctx.currentTime + index * 0.3);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + index * 0.3 + 0.8);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + index * 0.3);
+          osc.stop(ctx.currentTime + index * 0.3 + 0.8);
+        });
+      } catch (e) {}
+    }
+
+    // Modal
+    function openGiftModal() {
+      const modal = document.getElementById('gift-modal');
+      const modalContent = document.getElementById('modal-content');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modalContent.classList.remove('scale-95');
+        modalContent.classList.add('scale-100');
+      }, 10);
+    }
+
+    function closeGiftModal() {
+      const modal = document.getElementById('gift-modal');
+      const modalContent = document.getElementById('modal-content');
+      modal.classList.add('opacity-0');
+      modalContent.classList.remove('scale-100');
+      modalContent.classList.add('scale-95');
+      setTimeout(() => { modal.classList.add('hidden'); }, 300);
+    }
+
+    function claimVoucher() {
+      alert("Voucher Redeemed! 💖");
+      closeGiftModal();
+    }
+  </script>
+</body>
+</html>
